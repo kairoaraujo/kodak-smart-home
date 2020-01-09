@@ -96,12 +96,12 @@ class KodakSmartHomeCam(Camera):
         self._ffmpeg_arguments = device_info.get(CONF_FFMPEG_ARGUMENTS)
 
         if len(self._motion_events) > 0:
-            self._last_video_id = self._motion_events[0]["id"]
+            self._last_video_id = self._motion_events[-1]["id"]
         else:
             self._last_video_id = None
 
         if self._last_video_id is not None:
-            for event_data in self._motion_events[0]["data"]:
+            for event_data in self._motion_events[-1]["data"]:
                 # type 2 is video url
                 if "file_type" in event_data and event_data["file_type"] == 2:
                     self._video_url = event_data["file"]
@@ -196,7 +196,7 @@ class KodakSmartHomeCam(Camera):
         self._utcnow = dt_util.utcnow()
 
         if len(self._motion_events) > 0:
-            last_event = self._motion_events[0]["id"]
+            last_event = self._motion_events[-1]["id"]
 
         else:
             return
