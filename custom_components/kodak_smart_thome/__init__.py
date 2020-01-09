@@ -63,7 +63,8 @@ def setup(hass, config):
         hass.data[DATA_KODAKSMARTHOME_CAMS] = hass_kodak
 
     except ConnectionError as ex:
-        _LOGGER.error("Unable to connect to Kodak Smart Home service: %s", str(ex))
+        _LOGGER.error(
+            "Unable to fetch camera from Kodak Smart Home Portal: %s", str(ex))
         hass.components.persistent_notification.create(
             "Error: {}<br />"
             "You will need to restart Home Assistant after fixing."
