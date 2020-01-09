@@ -128,7 +128,7 @@ class KodakSmartHomeCam(Camera):
     @property
     def name(self):
         """Return the name of this camera."""
-        return "kodak_" + self._name
+        return self._name
 
     @property
     def unique_id(self):
