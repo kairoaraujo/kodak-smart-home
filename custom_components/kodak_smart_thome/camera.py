@@ -18,7 +18,7 @@ from homeassistant.util import dt as dt_util
 
 from . import (
     ATTRIBUTION,
-    DATA_KODAKSMARTHOME_CAMS,
+    DATA_KODAKSMARTHOME,
     NOTIFICATION_ID,
     SIGNAL_UPDATE_KODAKSMARTHOME,
 )
@@ -38,8 +38,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up Kodak Smart Home Camera."""
-    kodak_smart_home_cams = hass.data[DATA_KODAKSMARTHOME_CAMS]
-    kodak_smart_home_cams.connect()
+    kodak_smart_home_cams = hass.data[DATA_KODAKSMARTHOME]
+    _LOGGER.debug(str(kodak_smart_home_cams))
 
     cams = []
     cam_offline = []
@@ -49,11 +49,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 KodakSmartHomeCam(
                     hass,
                     camera,
-                    kodak_smart_home_cams.get_motion_events(
-                        device_id=camera["device_id"]
-                    ),
-                    config,
-                )
+                    config
+                ),
             )
         else:
             cam_offline.append(camera)
@@ -85,11 +82,16 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 class KodakSmartHomeCam(Camera):
     """An implementation of a Kodak Smart Home camera."""
 
-    def __init__(self, hass, camera, motion_events, device_info):
+    def __init__(self, hass, camera, device_info):
         """Initialize Kodak Smart Home camera."""
         super().__init__()
+        self._kodak_data = hass.data[DATA_KODAKSMARTHOME]
+        _LOGGER.debug(str(self._kodak_data))
         self._camera = camera
-        self._motion_events = motion_events
+        self._motion_events = self._kodak_data.get_motion_events(
+            device_id=self._camera["device_id"]
+        )
+        _LOGGER.debug("Len motion events: %s", len(self._motion_events))
         self._hass = hass
         self._name = self._camera["name"]
         self._ffmpeg = hass.data[DATA_FFMPEG]
@@ -101,10 +103,10 @@ class KodakSmartHomeCam(Camera):
             self._last_video_id = None
 
         if self._last_video_id is not None:
-            for event_data in self._motion_events[-1]["data"]:
-                # type 2 is video url
-                if "file_type" in event_data and event_data["file_type"] == 2:
-                    self._video_url = event_data["file"]
+            self._video_url = self._get_event_video_url(
+                self._motion_events[-1]["data"]
+            )
+
         else:
             self._video_url = None
 
@@ -116,6 +118,17 @@ class KodakSmartHomeCam(Camera):
         async_dispatcher_connect(
             self.hass, SIGNAL_UPDATE_KODAKSMARTHOME, self._update_callback
         )
+
+    @staticmethod
+    def _get_event_video_url(events_data):
+        for event_data in events_data:
+            # type 2 is video url
+            if "file_type" in event_data and event_data["file_type"] == 2:
+                video_url = event_data["file"]
+
+                return video_url
+
+        return
 
     @callback
     def _update_callback(self):
@@ -171,7 +184,8 @@ class KodakSmartHomeCam(Camera):
             return
 
         stream = CameraMjpeg(self._ffmpeg.binary, loop=self.hass.loop)
-        await stream.open_camera(self._video_url, extra_cmd=self._ffmpeg_arguments)
+        await stream.open_camera(self._video_url,
+                                 extra_cmd=self._ffmpeg_arguments)
 
         try:
             stream_reader = await stream.get_reader()
@@ -191,26 +205,42 @@ class KodakSmartHomeCam(Camera):
 
     def update(self):
         """Update camera entity and refresh attributes."""
-        _LOGGER.debug("Checking if Kodak Camera needs to refresh video_url")
-
+        _LOGGER.debug(
+            "Checking if Kodak Camera %s needs to refresh data", self._name
+        )
         self._utcnow = dt_util.utcnow()
 
-        if len(self._motion_events) > 0:
-            last_event = self._motion_events[-1]["id"]
+        # check if there is new event
+        if len(self._kodak_data.get_motion_events(
+                device_id=self._camera["device_id"]
+        )) > 0:
+            last_events_data = self._kodak_data.get_motion_events(
+                device_id=self._camera["device_id"]
+            )[-1]["data"]
+            last_event_id = self._kodak_data.get_motion_events(
+                device_id=self._camera["device_id"]
+            )[-1]["id"]
 
         else:
             return
 
+        _LOGGER.debug("Last event: %s", last_event_id)
+        _LOGGER.debug("Last video id : %s", self._last_video_id)
+
+        # compare the new events
         if (
-            self._last_video_id != last_event or
-            self._utcnow >= self._expires_at
+                self._last_video_id != last_event_id or
+                self._utcnow >= self._expires_at
         ):
 
-            video_url = self._video_url
+            video_url = self._get_event_video_url(last_events_data)
             if video_url:
-                _LOGGER.info("Kodak Smart Home camera properties refreshed")
+                _LOGGER.info(
+                    "Kodak Smart Home camera %s properties refreshed",
+                    self._name
+                )
 
                 # update attributes if new video or if URL has expired
-                self._last_video_id = last_event
+                self._last_video_id = last_event_id
                 self._video_url = video_url
                 self._expires_at = FORCE_REFRESH_INTERVAL + self._utcnow

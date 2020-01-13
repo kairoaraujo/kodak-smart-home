@@ -22,14 +22,14 @@ ATTRIBUTION = "Data provided by Kodak Smart Home Portal"
 NOTIFICATION_ID = "kodak_smart_home_notification"
 NOTIFICATION_TITLE = "Kodak Smart Home Setup"
 
-DATA_KODAKSMARTHOME_CAMS = "kodak_smart_home_cams"
+DATA_KODAKSMARTHOME = "kodak_smart_home_cams"
 
 DOMAIN = "kodak_smart_home"
 DEFAULT_CACHEDB = ".kodak_smart_home_cache.pickle"
 DEFAULT_ENTITY_NAMESPACE = "kodak_smart_home"
 SIGNAL_UPDATE_KODAKSMARTHOME = "kodak_smart_home_update"
 
-SCAN_INTERVAL = timedelta(seconds=10)
+SCAN_INTERVAL = timedelta(seconds=60)
 
 CONFIG_SCHEMA = vol.Schema(
     {
@@ -38,7 +38,9 @@ CONFIG_SCHEMA = vol.Schema(
                 vol.Required(CONF_USERNAME): cv.string,
                 vol.Required(CONF_PASSWORD): cv.string,
                 vol.Required(CONF_REGION): cv.string,
-                vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL): cv.time_period,
+                vol.Optional(
+                    CONF_SCAN_INTERVAL, default=SCAN_INTERVAL
+                ): cv.time_period,
             }
         )
     },
@@ -60,7 +62,7 @@ def setup(hass, config):
         if not hass_kodak.is_connected:
             return False
 
-        hass.data[DATA_KODAKSMARTHOME_CAMS] = hass_kodak
+        hass.data[DATA_KODAKSMARTHOME] = hass_kodak
 
     except ConnectionError as ex:
         _LOGGER.error(
@@ -83,7 +85,8 @@ def setup(hass, config):
     def hub_refresh():
         """Call hass_kodak to refresh information."""
         _LOGGER.debug("Updating Kodak Smart Home Hub component")
-        hass_kodak.update()
+        hass.data[DATA_KODAKSMARTHOME].update()
+        dispatcher_send(hass, SIGNAL_UPDATE_KODAKSMARTHOME)
 
     # register service
     hass.services.register(DOMAIN, "update", service_hub_refresh)
