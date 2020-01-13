@@ -39,7 +39,6 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up Kodak Smart Home Camera."""
     kodak_smart_home_cams = hass.data[DATA_KODAKSMARTHOME]
-    _LOGGER.debug(str(kodak_smart_home_cams))
 
     cams = []
     cam_offline = []
@@ -86,12 +85,10 @@ class KodakSmartHomeCam(Camera):
         """Initialize Kodak Smart Home camera."""
         super().__init__()
         self._kodak_data = hass.data[DATA_KODAKSMARTHOME]
-        _LOGGER.debug(str(self._kodak_data))
         self._camera = camera
         self._motion_events = self._kodak_data.get_motion_events(
             device_id=self._camera["device_id"]
         )
-        _LOGGER.debug("Len motion events: %s", len(self._motion_events))
         self._hass = hass
         self._name = self._camera["name"]
         self._ffmpeg = hass.data[DATA_FFMPEG]
