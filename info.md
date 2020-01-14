@@ -16,6 +16,16 @@ custom_components/kodak_smart_home/services.yaml
 ```
 
 ## Example configuration.yaml
+
+Integration configuration
+```yaml
+kodak_smart_home:
+  username: !secret kodak_portal_email
+  password: !secret kodak_portal_password
+  region: 'EU'
+```
+
+Camera configuration
 ```yaml
 camera:
   - platform: kodak_smart_home
