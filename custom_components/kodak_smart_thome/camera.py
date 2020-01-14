@@ -58,18 +58,13 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     if cam_offline:
         cameras = str(", ".join([camera["name"] for camera in cam_offline]))
 
-        err_msg = (
-            """Cameras are offline""" """ following cameras: {}.""".format(
-                cameras
-            )
-        )
+        err_msg = f"Cameras are offline, following cameras: {cameras}."
 
         _LOGGER.error(err_msg)
         hass.components.persistent_notification.create(
-            "Error: {}<br />"
-            "It needs to be fixed in the Camera/Kodak Smart Home Portal. "
-            "Home Assistant reboot is required."
-            "".format(err_msg),
+            f"Error: {err_msg}<br />"
+            + "It needs to be fixed in the Camera/Kodak Smart Home Portal. "
+            + "Home Assistant reboot is required.",
             title=NOTIFICATION_TITLE,
             notification_id=NOTIFICATION_ID,
         )
@@ -132,7 +127,7 @@ class KodakSmartHomeCam(Camera):
         """Call update method."""
         self.async_schedule_update_ha_state(True)
         _LOGGER.debug(
-            "Updating Kodak Smart Home camera %s (callback)", self.name
+            f"Updating Kodak Smart Home camera {self.name} (callback)"
         )
 
     @property
@@ -203,7 +198,7 @@ class KodakSmartHomeCam(Camera):
     def update(self):
         """Update camera entity and refresh attributes."""
         _LOGGER.debug(
-            "Checking if Kodak Camera %s needs to refresh data", self._name
+            f"Checking if Kodak Camera {self._name} needs to refresh data"
         )
         self._utcnow = dt_util.utcnow()
 
@@ -221,8 +216,8 @@ class KodakSmartHomeCam(Camera):
         else:
             return
 
-        _LOGGER.debug("Last event: %s", last_event_id)
-        _LOGGER.debug("Last video id : %s", self._last_video_id)
+        _LOGGER.debug(f"Last event: {last_event_id}")
+        _LOGGER.debug(f"Last video id : {self._last_video_id}")
 
         # compare the new events
         if (
@@ -233,8 +228,8 @@ class KodakSmartHomeCam(Camera):
             video_url = self._get_event_video_url(last_events_data)
             if video_url:
                 _LOGGER.info(
-                    "Kodak Smart Home camera %s properties refreshed",
-                    self._name
+                    f"Kodak Smart Home camera {self._name} properties "
+                    + "refreshed"
                 )
 
                 # update attributes if new video or if URL has expired

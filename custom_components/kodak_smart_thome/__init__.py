@@ -64,13 +64,12 @@ def setup(hass, config):
 
         hass.data[DATA_KODAKSMARTHOME] = hass_kodak
 
-    except ConnectionError as ex:
+    except ConnectionError as err:
         _LOGGER.error(
-            "Unable to fetch camera from Kodak Smart Home Portal: %s", str(ex))
+            f"Unable to fetch camera from Kodak Smart Home Portal: {str(err)}")
         hass.components.persistent_notification.create(
-            "Error: {}<br />"
-            "You will need to restart Home Assistant after fixing."
-            "".format(ex),
+            f"Error: {err}<br />"
+            + "You will need to restart Home Assistant after fixing.",
             title=NOTIFICATION_TITLE,
             notification_id=NOTIFICATION_ID,
         )
