@@ -4,5 +4,6 @@
   "documentation": "https://www.home-assistant.io/integrations/kodak_smart_home",
   "requirements": ["python-kodaksmarthome==0.1.3b1"],
   "dependencies": ["ffmpeg"],
-  "codeowners": ["@kairoaraujo"]
+  "codeowners": ["@kairoaraujo"],
+  "version": "1.0.2"
 }
