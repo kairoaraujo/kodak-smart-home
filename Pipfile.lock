@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "53851b584a0238e6d96511bf66638c07b14ca641603ab59806dd55572cf70bb2"
+            "sha256": "3af386dd41157fb4f23b8075cffe6bb577c569c6830fdc5e77f89ad2839c48e2"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -39,10 +39,10 @@
         },
         "python-kodaksmarthome": {
             "hashes": [
-                "sha256:3acc6e32e19c5ec56255ad2cd28e3ba667451d654a93a2286cff5d8c4ae8f24a"
+                "sha256:9f1ed50123c7fab55cbe5c9a120c2df04ce6f64ed6a4db6c07fdccc306cd1927"
             ],
             "index": "pypi",
-            "version": "==0.1.3b1"
+            "version": "==0.1.3b2"
         },
         "requests": {
             "hashes": [
