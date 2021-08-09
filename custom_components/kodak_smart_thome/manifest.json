@@ -2,7 +2,7 @@
   "domain": "kodak_smart_home",
   "name": "Kodak Smart Home",
   "documentation": "https://www.home-assistant.io/integrations/kodak_smart_home",
-  "requirements": ["python-kodaksmarthome==0.1.3b2"],
+  "requirements": ["python-kodaksmarthome==0.1.3b3"],
   "dependencies": ["ffmpeg"],
   "codeowners": ["@kairoaraujo"],
   "version": "1.1.0"
