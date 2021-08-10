@@ -155,7 +155,7 @@ class KodakSmartHomeCam(Camera):
     async def async_camera_image(self):
         """Return a still image response from the camera."""
 
-        ffmpeg = ImageFrame(self._ffmpeg.binary, loop=self.hass.loop)
+        ffmpeg = ImageFrame(self._ffmpeg.binary)
 
         if self._video_url is None:
             return
@@ -175,7 +175,7 @@ class KodakSmartHomeCam(Camera):
         if self._video_url is None:
             return
 
-        stream = CameraMjpeg(self._ffmpeg.binary, loop=self.hass.loop)
+        stream = CameraMjpeg(self._ffmpeg.binary)
         await stream.open_camera(self._video_url,
                                  extra_cmd=self._ffmpeg_arguments)
 
