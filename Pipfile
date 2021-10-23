@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-python-kodaksmarthome = "==0.1.3b2"
+python-kodaksmarthome = "==0.1.4b0"
 
 [requires]
 python_version = "3.7"
