@@ -1,11 +1,11 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3af386dd41157fb4f23b8075cffe6bb577c569c6830fdc5e77f89ad2839c48e2"
+            "sha256": "84c636d726ef1d2e9b3b4930f2eefafea342adb01e270f96051eb37ee31237f9"
         },
         "pipfile-spec": 6,
         "requires": {
-            "python_version": "3.7"
+            "python_version": "3.9"
         },
         "sources": [
             {
@@ -18,10 +18,11 @@
     "default": {
         "certifi": {
             "hashes": [
-                "sha256:2bbf76fd432960138b3ef6dda3dde0544f27cbf8546c458e60baf371917ba9ee",
-                "sha256:50b1e4f8446b06f41be7dd6338db18e0990601dce795c2b1686458aa7e8fa7d8"
+                "sha256:0d9c601124e5a6ba9712dbc60d9c53c21e34f5f641fe83002317394311bdce14",
+                "sha256:90c1a32f1d68f940488354e36370f6cca89f0f106db09518524c88d6ed83f382"
             ],
-            "version": "==2021.5.30"
+            "markers": "python_version >= '3.6'",
+            "version": "==2022.9.24"
         },
         "chardet": {
             "hashes": [
@@ -39,10 +40,10 @@
         },
         "python-kodaksmarthome": {
             "hashes": [
-                "sha256:9f1ed50123c7fab55cbe5c9a120c2df04ce6f64ed6a4db6c07fdccc306cd1927"
+                "sha256:7e71c3455eb7872d96606a985f0eeaf318c53495551b0ae5cd0cf7cab80799dd"
             ],
             "index": "pypi",
-            "version": "==0.1.3b2"
+            "version": "==0.1.5b1"
         },
         "requests": {
             "hashes": [
